@@ -6,7 +6,7 @@ public class BooleanRetrieval{
           Scanner scanner;
           File file ;
           try{
-               file = new File("/Users/tony/Desktop/" + nombre + ".txt");
+               file = new File("./" + nombre + ".txt");
                scanner =  new Scanner(file);
                while (scanner.hasNext()){
                     String palabra = scanner.next();
