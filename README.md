@@ -1,4 +1,4 @@
 # Boolean-Retrieval
 
 
-![Alt Text](https://giphy.com/gifs/cartoon-spongebob-squarepants-fKO3LF3DYpxpm)
+![Alt Text](https://developers.giphy.com/static/img/giphy_api.33a56fbc9e1d.gif)
