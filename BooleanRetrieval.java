@@ -1,4 +1,6 @@
 import com.sun.corba.se.spi.ior.ObjectKey;
+import org.omg.CORBA.MARSHAL;
+import sun.tools.jconsole.InternalDialog;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -6,35 +8,14 @@ import java.text.Collator;
 import java.util.*;
 public class BooleanRetrieval{
 
-     public static LinkedList<Object> leerDocumento(String nombre, LinkedList<Object> diccionario){
-          Scanner scanner;
-          File file ;
-          try{
-               file = new File("./" + nombre + ".txt");
-               scanner =  new Scanner(file);
-               while (scanner.hasNext()){
-                    String palabra = scanner.next();
-                    diccionario.add(palabra);
-               }
-          }catch (Exception e) {
-               System.out.println("No hay ese documento");
-          }
-          //Collections.sort(diccionario);
-            System.out.println(diccionario);
-          return diccionario;
-     }
-
-     //Map<String, LinkedList<Integer>>
-
      public static void index(String[] files){
 
           Scanner scanner;
           File file;
 
-          ArrayList<String> diccionario = new ArrayList<String>();    //Todas las palabras de los 3 textos
-          //Set<String> diccionario = new HashSet<String>();
+          //ArrayList<String> diccionario = new ArrayList<String>();    //Todas las palabras de los 3 textos
+          Set<String> diccionario = new HashSet<String>();
           List diccionariOrdenado;      //Es para ordenar diccionario
-          int[] posting = new int[3];
 
           ArrayList<String[]> palabrasArchivos = new ArrayList<String[]>();     //Se almacenan todas las palabras para leer solo una vez
 
@@ -71,7 +52,7 @@ public class BooleanRetrieval{
 
           diccionariOrdenado = new ArrayList(diccionario);
           Collections.sort(diccionariOrdenado);
-          System.out.println(diccionariOrdenado + "\ntamañoooo:"+ diccionariOrdenado.size());
+          //System.out.println(diccionariOrdenado + "\ntamañoooo:"+ diccionariOrdenado.size());
 
           /*
            *Se empieza a buscar por cada palabra
@@ -81,43 +62,62 @@ public class BooleanRetrieval{
            * y esta linked list se mete al map<String, LinkedList<Integer>>
            *     con el string de la palabra y la linked list simula el posting
            */
-          for(Object palabra: diccionariOrdenado){
-               for(int archivo = 0; archivo < palabrasArchivos.size(); archivo++){
-                    System.out.println(Arrays.toString(palabrasArchivos.get(archivo)));
-                    /*for(int i = 0; i < posts.length; i++){
-                         if(palabra.equals(posts[i])){
-                              System.out.println(palabra);
-                         }
-                    }*/
+          ArrayList<Map<String,Integer>> mapDeMaps = new ArrayList<>();
+          for(int archivo = 0; archivo < palabrasArchivos.size(); archivo++){
+               LinkedList<Integer> post = new LinkedList<Integer>();
+               String[] conjuntoPalabras = palabrasArchivos.get(archivo);
+               //System.out.println(Arrays.toString(conjuntoPalabras));
+               String palabra = "";
+               Map<String, Integer> dictionary = new HashMap<String, Integer>();
+               for(int p = 0; p < conjuntoPalabras.length;p++){
+                    //System.out.println(conjuntoPalabras[p]);
+                    palabra = conjuntoPalabras[p];
+                    if(diccionario.contains(palabra)){
+                         //System.out.println("EXISTEE");
+                         //post.add(archivo);
+                         //System.out.println(palabra + " *existe en*" + post);
+                         //invertedIndex.put(palabra, post);
+                         dictionary.put(palabra, archivo+1);
+                    }
                }
+               mapDeMaps.add(dictionary);
           }
+          System.out.println("MAPS: " + mapDeMaps);
+
+          for(Object w: diccionariOrdenado){      //Cada palabra en el diccionariOrdenado
+               String word = (String) w;
+               LinkedList<Integer> post = new LinkedList<Integer>();
+               for(int i = 0; i < mapDeMaps.size(); i++){   //Cada diccionario (indica palabra = indice)
+                    Map<String, Integer> cadaDictionary = mapDeMaps.get(i);
+
+                    String[] palabras = cadaDictionary.keySet().toArray(new String[cadaDictionary.size()]);
+                    Integer[] numDocs = cadaDictionary.values().toArray(new Integer[cadaDictionary.size()]);
+
+                    for(int j = 0; j < palabras.length; j++){
+                         if(word.equals(palabras[j])){
+                              post.add(numDocs[i]);
+                         }
+                    }
+               }
+               invertedIndex.put(word, post);
+
+          }
+
+          print("______________\nThe inverted index is: \n  ".toUpperCase() + invertedIndex.toString() + "\n______________");
+
+
      }
 
 
 
+     private static void print(String string){
+          System.out.println(string);
+     }
+
      public static void main(String[] args) {
-          //LinkedList<Object> index = new LinkedList<Object>();
-          ArrayList<String> diccionario1 = new ArrayList<String>();
-          ArrayList<String> diccionario2 = new ArrayList<String>();
-          ArrayList<String> diccionario3 = new ArrayList<String>();
-
-          //java.util.Map<String, String> dic = new java.util.Map<>();
-
           System.out.println("Leyendo el archivo........");
           String files[] = {"texto1", "texto2", "texto3"};
           index(files);
-          /*
-          //index.add(leerDocumento("texto1", index));
-          //index.add(leerDocumento("texto2", index));
-          //index.add(leerDocumento("texto3", index));
-
-
-          //System.out.println(index.get(12));
-          System.out.println(diccionario1.toString());
-          System.out.println(diccionario2.toString());
-          System.out.println(diccionario3.toString());
-          */
           System.out.println("Lectura finalizada.");
-
      }
 }
