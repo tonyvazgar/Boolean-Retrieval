@@ -1,40 +1,37 @@
-import com.sun.corba.se.spi.ior.ObjectKey;
-import org.omg.CORBA.MARSHAL;
-import sun.tools.jconsole.InternalDialog;
-
 import java.io.File;
-import java.lang.reflect.Array;
-import java.text.Collator;
 import java.util.*;
+
+/*
+ *Inverted index
+ *Created by Tony Vazgar on 8/22/18.
+ *Copyright © 2018 Tony Vazgar. All rights reserved.
+ *contact: luis.vazquezga@udlap.mx
+ */
+
 public class BooleanRetrieval{
 
-     public static void index(String[] files){
+     public static Map<String, LinkedList<Integer>> index(String[] files){
 
           Scanner scanner;
           File file;
-
-          //ArrayList<String> diccionario = new ArrayList<String>();    //Todas las palabras de los 3 textos
           Set<String> diccionario = new HashSet<String>();
           List diccionariOrdenado;      //Es para ordenar diccionario
-
           ArrayList<String[]> palabrasArchivos = new ArrayList<String[]>();     //Se almacenan todas las palabras para leer solo una vez
-
-
           Map<String, LinkedList<Integer>> invertedIndex = new HashMap<String, LinkedList<Integer>>();
-
 
           ///////////////////////
 
           /*
            *Agregamos las palabras al diccionario y despues del for se ordena.
            */
+          System.out.println("Leyendo el archivo........");
           for(int i = 0; i < files.length; i++){
                try{
                     file = new File("./" + files[i] + ".txt");
                     scanner = new Scanner(file);
                     ArrayList<String> lecturas = new ArrayList<String>();
                     while (scanner.hasNext()){
-                         String word = scanner.next().toLowerCase();
+                         String word = scanner.next().toLowerCase() ;
                          diccionario.add(word);   //Se agregan al diccionario global
                          lecturas.add(word);      //Se a palabras de cada archivo
                     }
@@ -49,19 +46,11 @@ public class BooleanRetrieval{
                     System.err.println("No existe ese documento :(");
                }
           }
+          System.out.println("Lectura finalizada.");
 
           diccionariOrdenado = new ArrayList(diccionario);
           Collections.sort(diccionariOrdenado);
-          //System.out.println(diccionariOrdenado + "\ntamañoooo:"+ diccionariOrdenado.size());
 
-          /*
-           *Se empieza a buscar por cada palabra
-           *
-           * Se quiere hacer que por cada palabra busque si existen en los conjuntos o repositorio global
-           * si es asi se hace una linked list con la posicion del conjunto
-           * y esta linked list se mete al map<String, LinkedList<Integer>>
-           *     con el string de la palabra y la linked list simula el posting
-           */
           ArrayList<Map<String,Integer>> mapDeMaps = new ArrayList<>();
           for(int archivo = 0; archivo < palabrasArchivos.size(); archivo++){
                LinkedList<Integer> post = new LinkedList<Integer>();
@@ -70,19 +59,13 @@ public class BooleanRetrieval{
                String palabra = "";
                Map<String, Integer> dictionary = new HashMap<String, Integer>();
                for(int p = 0; p < conjuntoPalabras.length;p++){
-                    //System.out.println(conjuntoPalabras[p]);
                     palabra = conjuntoPalabras[p];
                     if(diccionario.contains(palabra)){
-                         //System.out.println("EXISTEE");
-                         //post.add(archivo);
-                         //System.out.println(palabra + " *existe en*" + post);
-                         //invertedIndex.put(palabra, post);
                          dictionary.put(palabra, archivo+1);
                     }
                }
                mapDeMaps.add(dictionary);
           }
-          System.out.println("MAPS: " + mapDeMaps);
 
           for(Object w: diccionariOrdenado){      //Cada palabra en el diccionariOrdenado
                String word = (String) w;
@@ -100,24 +83,105 @@ public class BooleanRetrieval{
                     }
                }
                invertedIndex.put(word, post);
-
           }
-
-          print("______________\nThe inverted index is: \n  ".toUpperCase() + invertedIndex.toString() + "\n______________");
-
-
+          return invertedIndex;
      }
 
-
+     public static void imprimirIndex(Map<String, LinkedList<Integer>> invertedIndex){
+          print("DICTIONARY             POSTINGS" );
+          for (String word: invertedIndex.keySet()) {
+               print(String.format("%-15s", word) + " -->    " + invertedIndex.get(word).toString());
+          }
+     }
 
      private static void print(String string){
           System.out.println(string);
      }
 
-     public static void main(String[] args) {
-          System.out.println("Leyendo el archivo........");
-          String files[] = {"texto1", "texto2", "texto3"};
-          index(files);
-          System.out.println("Lectura finalizada.");
+     public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, LinkedList<Integer>> invertedIndex) {
+          LinkedList<Integer> posts = new LinkedList<>();
+          Iterator word = invertedIndex.keySet().iterator();
+          while (word.hasNext()){
+               String p = (String)word.next();
+               if(p.equals(palabra)){
+                    posts = invertedIndex.get(p);
+               }
+          }
+          print(posts.toString());
+          return posts;
      }
+
+     public static void intersect(LinkedList<Integer> p1, LinkedList<Integer> p2){
+
+          /*
+           *   IMPLEMENTATION OF THE NEXT ALGORITHM:
+           *
+           *     INTERSECT(p1, p2)
+           *        answer←⟨⟩
+           *        while p1 ̸= NIL and p2 ̸= NIL
+           *        do if docID(p1) = docID(p2)
+           *             then ADD(answer, docID(p1))
+           *                  p1 ← next(p1)
+           *                  p2 ← next(p2)
+           *             else if docID(p1) < docID(p2)
+           *                  then p1 ← next(p1)
+           *                  else p2 ← next(p2)
+           *        return answer
+           */
+          LinkedList<Integer> answer = new LinkedList<>();
+          while (!p1.isEmpty() && !p2.isEmpty()){
+               if(p1.getFirst() == p2.getFirst()){
+                    answer.add(p1.getFirst());
+                    p1.removeFirst();
+                    p2.removeFirst();
+               }else{
+                    if (p1.getFirst() < p2.getFirst()){
+                         p1.removeFirst();
+                    }else{
+                         p2.removeFirst();
+                    }
+               }
+          }
+          print("Las palabras buscadas están en el archivo: " + answer.toString());
+     }
+
+     public static void menu(Map<String, LinkedList<Integer>> invertedIndex){
+          boolean i = true;
+          while (i) {
+               Scanner scanner = new Scanner(System.in);
+               print("Type the number of one of the options below:");
+               print("0) See the inverted index.");
+               print("1) Words that must be included.");
+               print("2) Word that must not be included.");
+               print("3) Word ");
+               int option = scanner.nextInt();
+               switch (option) {
+                    case 0:
+                         imprimirIndex(invertedIndex);
+                         break;
+                    case 1:
+                         break;
+                    case 2:
+                         break;
+                    case 3:
+                         break;
+                    default:
+                         print("Only numbers with the option acepted");
+                         i = false;
+                         break;
+               }
+          }
+     }
+
+     public static void main(String[] args) {
+
+          Map<String, LinkedList<Integer>> invertedIndex;
+
+          String files[] = {"1", "2", "3"};
+          invertedIndex = index(files);
+
+          menu(invertedIndex);
+          intersect(buscarPalabra("mac", invertedIndex) , buscarPalabra("coche", invertedIndex));
+     }
+
 }
