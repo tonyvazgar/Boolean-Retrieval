@@ -5,7 +5,8 @@ import java.util.*;
  *Inverted index
  *Created by Tony Vazgar on 8/22/18.
  *Copyright © 2018 Tony Vazgar. All rights reserved.
- *contact: luis.vazquezga@udlap.mx
+ *Contact: luis.vazquezga@udlap.mx
+ *         @tonyvazgar on Twitter and Instagram
  */
 
 public class BooleanRetrieval{
