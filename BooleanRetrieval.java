@@ -146,20 +146,20 @@ public class BooleanRetrieval{
      }
 
      public static void menu(Map<String, LinkedList<Integer>> invertedIndex){
+          imprimirIndex(invertedIndex);
           boolean i = true;
           while (i) {
                Scanner scanner = new Scanner(System.in);
                print("Type the number of one of the options below:");
-               print("0) See the inverted index.");
                print("1) Words that must be included.");
                print("2) Word that must not be included.");
                print("3) Word ");
                int option = scanner.nextInt();
                switch (option) {
-                    case 0:
-                         imprimirIndex(invertedIndex);
-                         break;
                     case 1:
+                         print("Type the two words that want to retrieve, they must be separated by spaces:");
+                         String palabras = new Scanner(System.in).nextLine();
+                         print(palabras);
                          break;
                     case 2:
                          break;
@@ -182,7 +182,6 @@ public class BooleanRetrieval{
 
           menu(invertedIndex);
           intersect(buscarPalabra("mac", invertedIndex) , buscarPalabra("coche", invertedIndex));
-          ///
      }
 
 }
