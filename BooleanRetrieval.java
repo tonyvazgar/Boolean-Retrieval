@@ -182,6 +182,7 @@ public class BooleanRetrieval{
 
           menu(invertedIndex);
           intersect(buscarPalabra("mac", invertedIndex) , buscarPalabra("coche", invertedIndex));
+          ///
      }
 
 }
