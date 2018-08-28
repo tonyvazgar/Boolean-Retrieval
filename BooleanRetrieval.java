@@ -85,6 +85,7 @@ public class BooleanRetrieval{
                }
                invertedIndex.put(word, post);
           }
+          //Regresa el inverted index ya con sus palabras y postings
           return invertedIndex;
      }
 
