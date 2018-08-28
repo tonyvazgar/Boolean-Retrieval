@@ -108,11 +108,11 @@ public class BooleanRetrieval{
                     posts = invertedIndex.get(p);
                }
           }
-          print(posts.toString());
+          //print(posts.toString());
           return posts;
      }
 
-     public static void intersect(LinkedList<Integer> p1, LinkedList<Integer> p2){
+     public static LinkedList<Integer> intersect(LinkedList<Integer> p1, LinkedList<Integer> p2){
 
           /*
            *   IMPLEMENTATION OF THE NEXT ALGORITHM:
@@ -130,48 +130,110 @@ public class BooleanRetrieval{
            *        return answer
            */
           LinkedList<Integer> answer = new LinkedList<>();
-          while (!p1.isEmpty() && !p2.isEmpty()){
-               if(p1.getFirst() == p2.getFirst()){
-                    answer.add(p1.getFirst());
-                    p1.removeFirst();
-                    p2.removeFirst();
+          LinkedList<Integer> pos1 = (LinkedList<Integer>) p1.clone();
+          LinkedList<Integer> pos2 = (LinkedList<Integer>) p2.clone();
+
+          while (!pos1.isEmpty() && !pos2.isEmpty()){
+               if(pos1.getFirst() == pos2.getFirst()){
+                    answer.add(pos1.getFirst());
+                    pos1.removeFirst();
+                    pos2.removeFirst();
                }else{
-                    if (p1.getFirst() < p2.getFirst()){
-                         p1.removeFirst();
+                    if (pos1.getFirst() < pos2.getFirst()){
+                         pos1.removeFirst();
                     }else{
-                         p2.removeFirst();
+                         pos2.removeFirst();
                     }
                }
           }
           print("Las palabras buscadas están en el archivo: " + answer.toString());
+          return answer;
+     }
+
+     public static List<Integer> not(LinkedList<Integer> p1, LinkedList<Integer> p2){
+          LinkedList<Integer> answer = (LinkedList<Integer>) p1.clone();
+          LinkedList<Integer> remove = (LinkedList<Integer>) p2.clone();
+          print("hoala");
+          print(answer.toString());
+          print(p2.toString());
+
+          for (Integer i: remove) {
+               if(answer.contains(i)){
+                    answer.remove(i);
+               }
+          }
+          return answer;
      }
 
      public static void menu(Map<String, LinkedList<Integer>> invertedIndex){
-          imprimirIndex(invertedIndex);
           boolean i = true;
-          while (i) {
-               Scanner scanner = new Scanner(System.in);
-               print("Type the number of one of the options below:");
-               print("1) Words that must be included.");
-               print("2) Word that must not be included.");
-               print("3) Word ");
-               int option = scanner.nextInt();
-               switch (option) {
-                    case 1:
-                         print("Type the two words that want to retrieve, they must be separated by spaces:");
-                         String palabras = new Scanner(System.in).nextLine();
-                         print(palabras);
-                         break;
-                    case 2:
-                         break;
-                    case 3:
-                         break;
-                    default:
-                         print("Only numbers with the option acepted");
-                         i = false;
-                         break;
+          /*
+           * word1 AND word2 AND NOT word3
+           * word1 AND word2 OR word3
+           * word1 OR word2 AND NOT word3
+           */
+          try {
+               while (i) {
+                    Scanner scanner = new Scanner(System.in);
+                    print("\nType the number of one of the options below:");
+                    print("0) Print the inverted index.");
+                    print("1) word1 AND word2 AND NOT word3");
+                    print("2) word1 AND word2 OR word3");
+                    print("3) word1 OR word2 AND NOT word3");
+                    print("4) word1 AND word2");
+
+                    int option = scanner.nextInt();
+                    switch (option) {
+                         case 0:
+                              imprimirIndex(invertedIndex);
+                              print("");
+                              break;
+                         case 1:
+                              print("word1 AND word2 AND NOT word3");
+                              print("   word1: ");
+                              String word1 = new Scanner(System.in).nextLine();
+                              print("   word2: ");
+                              String word2 = new Scanner(System.in).nextLine();
+                              print("   word3: ");
+                              String word3 = new Scanner(System.in).nextLine();
+                              LinkedList<Integer> r1 = intersect(buscarPalabra(word1, invertedIndex), buscarPalabra(word2, invertedIndex));
+                              print("\nRESULT FOR THE QUERY:\n" + word1 + " AND " + word2 + " AND NOT " + word3 + " --> " + not(r1, buscarPalabra(word3, invertedIndex)).toString());
+                              break;
+                         case 2:
+                              print("word1 AND word2 OR word3");
+                              print("   word1: ");
+                              String word21 = new Scanner(System.in).nextLine();
+                              print("   word2: ");
+                              String word22 = new Scanner(System.in).nextLine();
+                              print("   word3: ");
+                              String word23 = new Scanner(System.in).nextLine();
+
+                              break;
+                         case 3:
+                              print("word1 OR word2 AND NOT word3");
+                              print("   word1: ");
+                              String word31 = new Scanner(System.in).nextLine();
+                              print("   word2: ");
+                              String word32 = new Scanner(System.in).nextLine();
+                              print("   word3: ");
+                              String word33 = new Scanner(System.in).nextLine();
+
+                              break;
+                         case 4:
+                              print("word1 AND word2");
+                              print("   word1: ");
+                              String word41 = new Scanner(System.in).nextLine();
+                              print("   word2: ");
+                              String word42 = new Scanner(System.in).nextLine();
+                              print("\nRESULT FOR THE QUERY:\n" + word41 + " AND " + word42 + " --> " + intersect(buscarPalabra(word41, invertedIndex), buscarPalabra(word42, invertedIndex)).toString());
+                         default:
+                              print("Only numbers bewteen 1 and 4");
+                    }
                }
+          }catch (InputMismatchException e){
+               System.err.println("Only numbers with the option acepted");
           }
+
      }
 
      public static void main(String[] args) {
@@ -182,7 +244,7 @@ public class BooleanRetrieval{
           invertedIndex = index(files);
 
           menu(invertedIndex);
-          intersect(buscarPalabra("mac", invertedIndex) , buscarPalabra("coche", invertedIndex));
+          //intersect(buscarPalabra("mac", invertedIndex) , buscarPalabra("coche", invertedIndex));
      }
 
 }
