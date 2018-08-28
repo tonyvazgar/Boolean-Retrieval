@@ -15,17 +15,15 @@ public class BooleanRetrieval{
 
           Scanner scanner;
           File file;
-          Set<String> diccionario = new HashSet<String>();
-          List diccionariOrdenado;      //Es para ordenar diccionario
-          ArrayList<String[]> palabrasArchivos = new ArrayList<String[]>();     //Se almacenan todas las palabras para leer solo una vez
-          Map<String, LinkedList<Integer>> invertedIndex = new HashMap<String, LinkedList<Integer>>();
+          Set<String> diccionario = new HashSet<String>();                                //Here goes every word but its repited
+          List diccionariOrdenado;                                                   //To clone the dictionary but with no repited words
+          ArrayList<String[]> palabrasArchivos = new ArrayList<String[]>();                 //Here goes every word of each document to storage them and have not to read the files many times
+          Map<String, LinkedList<Integer>> invertedIndex = new HashMap<String, LinkedList<Integer>>();         //The "dictionary" for the inverted index with its respective posting list
 
           ///////////////////////
 
-          /*
-           *Agregamos las palabras al diccionario y despues del for se ordena.
-           */
           System.out.println("Leyendo el archivo........");
+          //For every document in the array of documents we storage thw words to make it faster and not have to read every moment
           for(int i = 0; i < files.length; i++){
                try{
                     file = new File("./" + files[i] + ".txt");
@@ -49,14 +47,18 @@ public class BooleanRetrieval{
           }
           System.out.println("Lectura finalizada.");
 
-          diccionariOrdenado = new ArrayList(diccionario);
+          diccionariOrdenado = new ArrayList(diccionario);            //To delete duplicates and only have one word
           Collections.sort(diccionariOrdenado);
 
           ArrayList<Map<String,Integer>> mapDeMaps = new ArrayList<>();
+          /*
+           *For each word in a document and for each word in the dictionary
+           * we create the linkedList to represent the posting lists
+           */
+          //
           for(int archivo = 0; archivo < palabrasArchivos.size(); archivo++){
                LinkedList<Integer> post = new LinkedList<Integer>();
                String[] conjuntoPalabras = palabrasArchivos.get(archivo);
-               //System.out.println(Arrays.toString(conjuntoPalabras));
                String palabra = "";
                Map<String, Integer> dictionary = new HashMap<String, Integer>();
                for(int p = 0; p < conjuntoPalabras.length;p++){
@@ -85,7 +87,6 @@ public class BooleanRetrieval{
                }
                invertedIndex.put(word, post);
           }
-          //Regresa el inverted index ya con sus palabras y postings
           return invertedIndex;
      }
 
@@ -112,7 +113,6 @@ public class BooleanRetrieval{
                     posts = invertedIndex.get(p);
                }
           }
-
           return posts;
      }
 
@@ -230,7 +230,6 @@ public class BooleanRetrieval{
                               print(word22 + " --> " + buscarPalabra(word22,invertedIndex).toString());
                               print(word23 + " --> " + buscarPalabra(word23,invertedIndex).toString());
                               LinkedList<Integer> and = intersect(buscarPalabra(word21, invertedIndex), buscarPalabra(word22, invertedIndex));
-
                               print("\nRESULT FOR THE QUERY:\n" + word21 + " AND " + word22 + " OR " + word23 + " --> " + or(and, buscarPalabra(word23, invertedIndex)).toString());
                               break;
                          case 3:
@@ -285,6 +284,7 @@ public class BooleanRetrieval{
 
           /*
            *To chance the documents for the desired ones only chance the names of the files[] array
+           *
            */
           String files[] = {"1", "2", "3"};
           //String files[] = {"texto1", "texto2", "texto3"};
