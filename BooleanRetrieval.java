@@ -165,6 +165,17 @@ public class BooleanRetrieval{
           return answer;
      }
 
+     public static LinkedList<Integer> or(LinkedList<Integer> p1, LinkedList<Integer> p2){
+         LinkedList<Integer> answer = (LinkedList<Integer>) p1.clone();
+         LinkedList<Integer> remove = (LinkedList<Integer>) p2.clone();
+
+         for (Integer element: remove) {
+             if(!answer.contains(element))
+                answer.add(element);
+         }
+         return answer;
+     }
+
      public static void menu(Map<String, LinkedList<Integer>> invertedIndex){
           boolean i = true;
           /*
@@ -207,7 +218,8 @@ public class BooleanRetrieval{
                               String word22 = new Scanner(System.in).nextLine();
                               print("   word3: ");
                               String word23 = new Scanner(System.in).nextLine();
-
+                              LinkedList<Integer> and = intersect(buscarPalabra(word21, invertedIndex), buscarPalabra(word22, invertedIndex));
+                              print("\nRESULT FOR THE QUERY:\n" + word21 + " AND " + word22 + " OR " + word23 + " --> " + or(and, buscarPalabra(word23, invertedIndex)).toString());
                               break;
                          case 3:
                               print("word1 OR word2 AND NOT word3");
@@ -217,7 +229,8 @@ public class BooleanRetrieval{
                               String word32 = new Scanner(System.in).nextLine();
                               print("   word3: ");
                               String word33 = new Scanner(System.in).nextLine();
-
+                              LinkedList<Integer> or = or(buscarPalabra(word31,invertedIndex),buscarPalabra(word32,invertedIndex));
+                              print("\nRESULT FOR THE QUERY:\n" + word31 + " OR " + word32 + " AND NOT " + word33 + " --> " + not(or, buscarPalabra(word33, invertedIndex)).toString());
                               break;
                          case 4:
                               print("word1 AND word2");
@@ -240,11 +253,10 @@ public class BooleanRetrieval{
 
           Map<String, LinkedList<Integer>> invertedIndex;
 
+          ////////////
           String files[] = {"1", "2", "3"};
           invertedIndex = index(files);
-
           menu(invertedIndex);
-          //intersect(buscarPalabra("mac", invertedIndex) , buscarPalabra("coche", invertedIndex));
      }
 
 }
