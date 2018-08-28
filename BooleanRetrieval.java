@@ -89,10 +89,13 @@ public class BooleanRetrieval{
      }
 
      public static void imprimirIndex(Map<String, LinkedList<Integer>> invertedIndex){
+          print("********************************************");
+          print("The inverted index for the documents are:\n");
           print("DICTIONARY             POSTINGS" );
           for (String word: invertedIndex.keySet()) {
                print(String.format("%-15s", word) + " -->    " + invertedIndex.get(word).toString());
           }
+          print("********************************************");
      }
 
      private static void print(String string){
@@ -108,7 +111,7 @@ public class BooleanRetrieval{
                     posts = invertedIndex.get(p);
                }
           }
-          //print(posts.toString());
+
           return posts;
      }
 
@@ -129,6 +132,7 @@ public class BooleanRetrieval{
            *                  else p2 ← next(p2)
            *        return answer
            */
+
           LinkedList<Integer> answer = new LinkedList<>();
           LinkedList<Integer> pos1 = (LinkedList<Integer>) p1.clone();
           LinkedList<Integer> pos2 = (LinkedList<Integer>) p2.clone();
@@ -153,9 +157,6 @@ public class BooleanRetrieval{
      public static List<Integer> not(LinkedList<Integer> p1, LinkedList<Integer> p2){
           LinkedList<Integer> answer = (LinkedList<Integer>) p1.clone();
           LinkedList<Integer> remove = (LinkedList<Integer>) p2.clone();
-          print("hoala");
-          print(answer.toString());
-          print(p2.toString());
 
           for (Integer i: remove) {
                if(answer.contains(i)){
@@ -173,6 +174,7 @@ public class BooleanRetrieval{
              if(!answer.contains(element))
                 answer.add(element);
          }
+         Collections.sort(answer);
          return answer;
      }
 
@@ -186,12 +188,14 @@ public class BooleanRetrieval{
           try {
                while (i) {
                     Scanner scanner = new Scanner(System.in);
-                    print("\nType the number of one of the options below:");
+                    print("________________________________________________");
+                    print("Type the number of one of the options below:\n");
                     print("0) Print the inverted index.");
                     print("1) word1 AND word2 AND NOT word3");
                     print("2) word1 AND word2 OR word3");
                     print("3) word1 OR word2 AND NOT word3");
                     print("4) word1 AND word2");
+                    print("5) word1 OR word2");
 
                     int option = scanner.nextInt();
                     switch (option) {
@@ -208,6 +212,9 @@ public class BooleanRetrieval{
                               print("   word3: ");
                               String word3 = new Scanner(System.in).nextLine();
                               LinkedList<Integer> r1 = intersect(buscarPalabra(word1, invertedIndex), buscarPalabra(word2, invertedIndex));
+                              print(word1 + " --> " + buscarPalabra(word1,invertedIndex).toString());
+                              print(word2 + " --> " + buscarPalabra(word2,invertedIndex).toString());
+                              print(word3 + " --> " + buscarPalabra(word3,invertedIndex).toString());
                               print("\nRESULT FOR THE QUERY:\n" + word1 + " AND " + word2 + " AND NOT " + word3 + " --> " + not(r1, buscarPalabra(word3, invertedIndex)).toString());
                               break;
                          case 2:
@@ -218,7 +225,11 @@ public class BooleanRetrieval{
                               String word22 = new Scanner(System.in).nextLine();
                               print("   word3: ");
                               String word23 = new Scanner(System.in).nextLine();
+                              print(word21 + " --> " + buscarPalabra(word21,invertedIndex).toString());
+                              print(word22 + " --> " + buscarPalabra(word22,invertedIndex).toString());
+                              print(word23 + " --> " + buscarPalabra(word23,invertedIndex).toString());
                               LinkedList<Integer> and = intersect(buscarPalabra(word21, invertedIndex), buscarPalabra(word22, invertedIndex));
+
                               print("\nRESULT FOR THE QUERY:\n" + word21 + " AND " + word22 + " OR " + word23 + " --> " + or(and, buscarPalabra(word23, invertedIndex)).toString());
                               break;
                          case 3:
@@ -230,6 +241,9 @@ public class BooleanRetrieval{
                               print("   word3: ");
                               String word33 = new Scanner(System.in).nextLine();
                               LinkedList<Integer> or = or(buscarPalabra(word31,invertedIndex),buscarPalabra(word32,invertedIndex));
+                              print(word31 + " --> " + buscarPalabra(word31,invertedIndex).toString());
+                              print(word32 + " --> " + buscarPalabra(word32,invertedIndex).toString());
+                              print(word33 + " --> " + buscarPalabra(word33,invertedIndex).toString());
                               print("\nRESULT FOR THE QUERY:\n" + word31 + " OR " + word32 + " AND NOT " + word33 + " --> " + not(or, buscarPalabra(word33, invertedIndex)).toString());
                               break;
                          case 4:
@@ -238,7 +252,20 @@ public class BooleanRetrieval{
                               String word41 = new Scanner(System.in).nextLine();
                               print("   word2: ");
                               String word42 = new Scanner(System.in).nextLine();
+                              print(word41 + " --> " + buscarPalabra(word41,invertedIndex).toString());
+                              print(word42 + " --> " + buscarPalabra(word42,invertedIndex).toString());
                               print("\nRESULT FOR THE QUERY:\n" + word41 + " AND " + word42 + " --> " + intersect(buscarPalabra(word41, invertedIndex), buscarPalabra(word42, invertedIndex)).toString());
+                              break;
+                         case 5:
+                              print("word1 OR word2");
+                              print("   word1: ");
+                              String word51 = new Scanner(System.in).nextLine();
+                              print("   word2: ");
+                              String word52 = new Scanner(System.in).nextLine();
+                              print(word51 + " --> " + buscarPalabra(word51,invertedIndex).toString());
+                              print(word52 + " --> " + buscarPalabra(word52,invertedIndex).toString());
+                              print("\nRESULT FOR THE QUERY:\n" + word51 + " OR " + word52 + " --> " + or(buscarPalabra(word51, invertedIndex), buscarPalabra(word52, invertedIndex)).toString());
+                              break;
                          default:
                               print("Only numbers bewteen 1 and 4");
                     }
@@ -254,7 +281,12 @@ public class BooleanRetrieval{
           Map<String, LinkedList<Integer>> invertedIndex;
 
           ////////////
+
+          /*
+           *To chance the documents for the desired ones only chance the names of the files[] array
+           */
           String files[] = {"1", "2", "3"};
+          //String files[] = {"texto1", "texto2", "texto3"};
           invertedIndex = index(files);
           menu(invertedIndex);
      }
