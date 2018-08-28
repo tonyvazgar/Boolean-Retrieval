@@ -2,11 +2,11 @@ import java.io.File;
 import java.util.*;
 
 /*
- *Inverted index
- *Created by Tony Vazgar on 8/22/18.
- *Copyright © 2018 Tony Vazgar. All rights reserved.
- *Contact: luis.vazquezga@udlap.mx
- *         @tonyvazgar on Twitter and Instagram
+ * Inverted Index for information retrieval
+ *
+ * Created by Tony Vazgar on 8/22/18.
+ * Copyright © 2018 Tony Vazgar. All rights reserved.
+ * Contact: luis.vazquezga@udlap.mx
  */
 
 public class BooleanRetrieval{
