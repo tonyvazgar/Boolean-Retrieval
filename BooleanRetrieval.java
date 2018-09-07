@@ -90,21 +90,7 @@ public class BooleanRetrieval{
           return invertedIndex;
      }
 
-     public static void imprimirIndex(Map<String, LinkedList<Integer>> invertedIndex){
-          print("********************************************");
-          print("The inverted index for the documents are:\n");
-          print("DICTIONARY             POSTINGS" );
-          for (String word: invertedIndex.keySet()) {
-               print(String.format("%-15s", word) + " -->    " + invertedIndex.get(word).toString());
-          }
-          print("********************************************");
-     }
-
-     private static void print(String string){
-          System.out.println(string);
-     }
-
-     public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, LinkedList<Integer>> invertedIndex) {
+public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, LinkedList<Integer>> invertedIndex) {
           LinkedList<Integer> posts = new LinkedList<>();
           Iterator word = invertedIndex.keySet().iterator();
           while (word.hasNext()){
@@ -290,6 +276,20 @@ public class BooleanRetrieval{
           //String files[] = {"texto1", "texto2", "texto3"};
           invertedIndex = index(files);
           menu(invertedIndex);
+     }
+
+     private static void imprimirIndex(Map<String, LinkedList<Integer>> invertedIndex){
+          print("********************************************");
+          print("The inverted index for the documents are:\n");
+          print("DICTIONARY             POSTINGS" );
+          for (String word: invertedIndex.keySet()) {
+               print(String.format("%-15s", word) + " -->    " + invertedIndex.get(word).toString());
+          }
+          print("********************************************");
+     }
+
+     private static void print(String string){
+          System.out.println(string);
      }
 
 }
