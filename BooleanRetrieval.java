@@ -11,6 +11,10 @@ import java.util.*;
 
 public class BooleanRetrieval{
 
+
+    /*
+     * Metodo para indexar los archivos.
+     */
      public static Map<String, LinkedList<Integer>> index(String[] files){
 
           Scanner scanner;
@@ -90,7 +94,14 @@ public class BooleanRetrieval{
           return invertedIndex;
      }
 
-public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, LinkedList<Integer>> invertedIndex) {
+
+
+
+
+     /*
+      * Metodos para buscar, intersectar y booleanos
+      */
+     public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, LinkedList<Integer>> invertedIndex) {
           LinkedList<Integer> posts = new LinkedList<>();
           Iterator word = invertedIndex.keySet().iterator();
           while (word.hasNext()){
@@ -101,7 +112,6 @@ public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, Link
           }
           return posts;
      }
-
      public static LinkedList<Integer> intersect(LinkedList<Integer> p1, LinkedList<Integer> p2){
 
           /*
@@ -140,7 +150,6 @@ public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, Link
           print("Las palabras buscadas están en el archivo: " + answer.toString());
           return answer;
      }
-
      public static List<Integer> not(LinkedList<Integer> p1, LinkedList<Integer> p2){
           LinkedList<Integer> answer = (LinkedList<Integer>) p1.clone();
           LinkedList<Integer> remove = (LinkedList<Integer>) p2.clone();
@@ -152,7 +161,6 @@ public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, Link
           }
           return answer;
      }
-
      public static LinkedList<Integer> or(LinkedList<Integer> p1, LinkedList<Integer> p2){
          LinkedList<Integer> answer = (LinkedList<Integer>) p1.clone();
          LinkedList<Integer> remove = (LinkedList<Integer>) p2.clone();
@@ -165,6 +173,13 @@ public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, Link
          return answer;
      }
 
+
+
+
+
+     /*
+      * Metodo para hacer la interfaz de usuario en consola
+      */
      public static void menu(Map<String, LinkedList<Integer>> invertedIndex){
           boolean i = true;
           /*
@@ -262,6 +277,13 @@ public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, Link
 
      }
 
+
+
+
+
+     /*
+      * Main y metodos para impresion
+      */
      public static void main(String[] args) {
 
           Map<String, LinkedList<Integer>> invertedIndex;
@@ -277,7 +299,6 @@ public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, Link
           invertedIndex = index(files);
           menu(invertedIndex);
      }
-
      private static void imprimirIndex(Map<String, LinkedList<Integer>> invertedIndex){
           print("********************************************");
           print("The inverted index for the documents are:\n");
@@ -287,9 +308,7 @@ public static LinkedList<Integer> buscarPalabra(String palabra, Map<String, Link
           }
           print("********************************************");
      }
-
      private static void print(String string){
           System.out.println(string);
      }
-
 }
