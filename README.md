@@ -1,6 +1,6 @@
 # Boolean-Retrieval
 
-We have to implement the next tasks:
+For the Information retrieval class we had to implement the next tasks:
 
 • To implement the Inverted index algorithm to process a boolean query.
 
